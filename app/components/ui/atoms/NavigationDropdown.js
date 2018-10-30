@@ -67,7 +67,7 @@ class NavigationDropdown extends React.Component {
   }
 
   render() {
-    const { options } = this.props
+    const { onChange, options, selectedValue } = this.props
 
     return (
       <Select
