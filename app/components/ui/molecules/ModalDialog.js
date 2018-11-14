@@ -35,9 +35,10 @@ const ModalDialog = ({
   onAccept,
   onCancel,
   size,
+  open,
   ...props
 }) => (
-  <ModalOverlay transparentBackground {...props}>
+  <ModalOverlay open={open} transparentBackground {...props}>
     <MiddleAligner alignItems="center" justifyContent="center">
       <WhiteBox p={3} size={size}>
         {children}

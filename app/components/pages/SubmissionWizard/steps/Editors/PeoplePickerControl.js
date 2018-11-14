@@ -1,6 +1,6 @@
 import React from 'react'
 
-import PersonPod from '../../../../ui/atoms/PersonPod'
+import PersonPod from '../../../../ui/molecules/PersonPod'
 import TwoColumnLayout from '../../../../global/layout/TwoColumnLayout'
 import PeoplePickerModal from './PeoplePickerModal'
 import ModalHistoryState from '../../../../ui/molecules/ModalHistoryState'
@@ -24,6 +24,7 @@ const PeoplePickerControl = ({
           isKeywordClickable={false}
           key={person.id}
           keywords={person.subjectAreas}
+          modalName={person.id}
           name={person.name}
           onIconClick={() => onRequestRemove(person)}
         />
@@ -31,7 +32,7 @@ const PeoplePickerControl = ({
 
       if (items.length < maxSelection)
         items.push(
-          <PersonPod.SelectButton
+          <PersonPod.Chooser
             isRequired={items.length < minSelection}
             key="chooser"
             onIconClick={showModal}

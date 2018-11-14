@@ -8,8 +8,10 @@ import { Box, Flex } from 'grid-styled'
 import { escapeRegExp } from 'lodash'
 
 import SelectedItem from '../atoms/SelectedItem'
-import PersonPod from '../atoms/PersonPod'
+import PersonPod from './PersonPod'
 import TwoColumnLayout from '../../global/layout/TwoColumnLayout'
+import ModalDialog from '../../ui/molecules/ModalDialog'
+import ModalHistoryState from '../../ui/molecules/ModalHistoryState'
 
 const MAX_DISPLAYED_PODS = 30
 
@@ -57,35 +59,54 @@ const PeoplePickerBody = ({
   selection,
   toggleSelection,
 }) => (
-  <React.Fragment>
-    <Flex justifyContent="space-between" mb={3}>
-      <SelectedItems onCloseClick={toggleSelection} selection={selection} />
-      <SelectionHint
-        maxSelection={maxSelection}
-        minSelection={minSelection}
-        selection={selection}
-      />
-    </Flex>
-    <TwoColumnLayout>
-      {people
-        .map(person => (
-          <PersonPod
-            iconType={isSelected(person) ? 'selected' : 'add'}
-            institution={person.aff}
-            isIconClickable={
-              isSelected(person) || selection.length < maxSelection
-            }
-            isKeywordClickable={false}
-            key={person.id}
-            keywords={person.subjectAreas}
-            name={person.name}
-            onIconClick={() => toggleSelection(person)}
-            // onKeywordClick will need to be added, once we know what the desired behaviour is
+  <ModalHistoryState name="full-person-info">
+    {({ showModal, hideModal, isModalVisible }) => (
+      <React.Fragment>
+        <Flex justifyContent="space-between" mb={3}>
+          <SelectedItems onCloseClick={toggleSelection} selection={selection} />
+          <SelectionHint
+            maxSelection={maxSelection}
+            minSelection={minSelection}
+            selection={selection}
           />
-        ))
-        .slice(0, MAX_DISPLAYED_PODS)}
-    </TwoColumnLayout>
-  </React.Fragment>
+        </Flex>
+        <TwoColumnLayout>
+          {people
+            .map(person => (
+              <PersonPod
+                iconType={isSelected(person) ? 'selected' : 'add'}
+                institution={person.aff}
+                isIconClickable={
+                  isSelected(person) || selection.length < maxSelection
+                }
+                isKeywordClickable={false}
+                key={person.id}
+                keywords={person.subjectAreas}
+                name={person.name}
+                onIconClick={() => toggleSelection(person)}
+                onInfoClick={() => showModal()}
+                // onKeywordClick will need to be added, once we know what the desired behaviour is
+              />
+            ))
+            .slice(0, MAX_DISPLAYED_PODS)}
+        </TwoColumnLayout>
+        <ModalDialog
+          acceptText="Add Editor"
+          onAccept={() => {
+            console.log('helllll yeah')
+          }}
+          onCancel={() => {
+            console.log('hell no')
+            hideModal()
+          }}
+          open={isModalVisible()}
+        >
+          <p>Name</p>
+          Institution and keywords
+        </ModalDialog>
+      </React.Fragment>
+    )}
+  </ModalHistoryState>
 )
 
 const PeoplePickerButtons = ({ isValid, onCancel, onSubmit }) => (

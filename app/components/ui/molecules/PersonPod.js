@@ -5,8 +5,8 @@ import { th } from '@pubsweet/ui-toolkit'
 import { Action } from '@pubsweet/ui'
 import { Flex, Box } from 'grid-styled'
 
-import Icon from './Icon'
-import ButtonAsIconWrapper from './ButtonAsIconWrapper'
+import Icon from '../atoms/Icon'
+import ButtonAsIconWrapper from '../atoms/ButtonAsIconWrapper'
 
 const AddIcon = props => (
   <Icon
@@ -119,12 +119,12 @@ const CollapsibleBox = styled(Box)`
 const PersonPodContainer = ({
   isIconClickable,
   onIconClick,
-  textContainer,
+  children,
   icon,
   ...props
 }) => (
   <StyledPod justifyContent="space-between">
-    {textContainer}
+    {children}
     <Flex flexDirection="column" justifyContent="center">
       <StyledButton
         data-test-id="person-pod-button"
@@ -150,7 +150,11 @@ const PodIcon = ({ iconType }) => {
   }
 }
 
-const PersonText = ({
+const PersonPod = ({
+  isIconClickable = true,
+  onIconClick,
+  onInfoClick,
+  iconType,
   name,
   institution = '',
   keywords,
@@ -185,58 +189,54 @@ const PersonText = ({
   )
 
   return (
-    <CollapsibleBox m={2} {...props}>
-      <RegularP>{name}</RegularP>
-      {institution && <RegularP>{institution}</RegularP>}
-      {!institution && <Box mb={3} />}
-      <Flex alignItems="center">
-        <ButtonAsIconWrapper>
-          <StyledInfoIcon />
-        </ButtonAsIconWrapper>
-        <SmallP>{separatedKeywords}</SmallP>
-      </Flex>
-      {isStatusShown && <SmallP>{status}</SmallP>}
-    </CollapsibleBox>
+    <React.Fragment>
+      <PersonPodContainer
+        icon={<PodIcon iconType={iconType} />}
+        isIconClickable={isIconClickable}
+        onIconClick={onIconClick}
+      >
+        <CollapsibleBox m={2} {...props}>
+          <RegularP>{name}</RegularP>
+          {institution && <RegularP>{institution}</RegularP>}
+          {!institution && <Box mb={3} />}
+          <Flex alignItems="center">
+            <ButtonAsIconWrapper onClick={onInfoClick}>
+              <StyledInfoIcon />
+            </ButtonAsIconWrapper>
+            <SmallP>{separatedKeywords}</SmallP>
+          </Flex>
+          {isStatusShown && <SmallP>{status}</SmallP>}
+        </CollapsibleBox>
+      </PersonPodContainer>
+    </React.Fragment>
   )
 }
 
-const PersonPod = ({
-  isIconClickable = true,
+const Chooser = ({
+  isIconClickable,
   onIconClick,
-  iconType,
+  roleName,
+  isRequired,
   ...props
 }) => (
-  <PersonPodContainer
-    icon={<PodIcon iconType={iconType} />}
-    isIconClickable={isIconClickable}
-    onIconClick={onIconClick}
-    textContainer={<PersonText {...props} />}
-  />
-)
-
-const ChooserText = ({ roleName, isRequired, ...props }) => (
-  <Flex flexDirection="column" justifyContent="center">
-    <Box ml={2}>
-      <RegularP>
-        Choose {roleName} ({isRequired ? 'required' : 'optional'})
-      </RegularP>
-    </Box>
-  </Flex>
-)
-
-const SelectButton = ({ isIconClickable, onIconClick, ...props }) => (
   <PersonPodContainer
     icon={<PodIcon iconType="add" />}
     isIconClickable
     onIconClick={onIconClick}
-    textContainer={<ChooserText {...props} />}
-  />
+  >
+    <Flex flexDirection="column" justifyContent="center">
+      <Box ml={2}>
+        <RegularP>
+          Choose {roleName} ({isRequired ? 'required' : 'optional'})
+        </RegularP>
+      </Box>
+    </Flex>
+  </PersonPodContainer>
 )
 
 PersonPodContainer.propTypes = {
   isIconClickable: PropTypes.bool.isRequired,
   onIconClick: PropTypes.func.isRequired,
-  textContainer: PropTypes.element.isRequired,
   icon: PropTypes.element.isRequired,
 }
 
@@ -244,7 +244,10 @@ PodIcon.propTypes = {
   iconType: PropTypes.oneOf(['add', 'remove', 'selected']).isRequired,
 }
 
-PersonText.propTypes = {
+PersonPod.propTypes = {
+  isIconClickable: PropTypes.bool,
+  onIconClick: PropTypes.func.isRequired,
+  iconType: PropTypes.oneOf(['add', 'remove', 'selected']).isRequired,
   name: PropTypes.string.isRequired,
   institution: PropTypes.string,
   keywords: PropTypes.arrayOf(PropTypes.string.isRequired),
@@ -254,7 +257,8 @@ PersonText.propTypes = {
   status: PropTypes.string,
 }
 
-PersonText.defaultProps = {
+PersonPod.defaultProps = {
+  isIconClickable: true,
   institution: '',
   keywords: [],
   onKeywordClick: null,
@@ -262,25 +266,12 @@ PersonText.defaultProps = {
   status: '',
 }
 
-PersonPod.propTypes = {
-  isIconClickable: PropTypes.bool,
+Chooser.propTypes = {
   onIconClick: PropTypes.func.isRequired,
-  iconType: PropTypes.oneOf(['add', 'remove', 'selected']).isRequired,
-}
-
-PersonPod.defaultProps = {
-  isIconClickable: true,
-}
-
-ChooserText.propTypes = {
   roleName: PropTypes.string.isRequired,
   isRequired: PropTypes.bool.isRequired,
 }
 
-SelectButton.propTypes = {
-  onIconClick: PropTypes.func.isRequired,
-}
-
-PersonPod.SelectButton = SelectButton
+PersonPod.Chooser = Chooser
 
 export default PersonPod
