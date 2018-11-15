@@ -8,3 +8,8 @@ The configuration methods for `node-config`, and their precedence, are as follow
 - `config/default.js` is used as the base configuration
 - `config/${environment}.js` is used for environment specific configuration, which can be stored publically. The environment is specified by setting `NODE_CONFIG_ENV` to the appropriate environment.
 - `config/custom-environment-variables.js` is used for environment specific secrets. This gets populated using configuration within [builder-configuration](https://github.com/elifesciences/builder-configuration), and injected into the app using [elife-xpub-formula](https://github.com/elifesciences/elife-xpub-formula) and [elife-xpub-deployment](https://github.com/elifesciences/elife-xpub-deployment).
+
+
+The configuration can be a pain to debug, but you can use the following lines of code to make it easier:
+`config.util.getConfigSources()` - get all config sources
+`config.util.getConfigSources().map(source => source.name)` - get the names of the loaded config files
