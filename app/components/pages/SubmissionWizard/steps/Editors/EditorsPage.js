@@ -153,9 +153,9 @@ class EditorsPage extends React.Component {
               onRequestRemove={person =>
                 this.removeSelection('suggestedSeniorEditors', person)
               }
-              onSubmit={selection =>
+              onSubmit={selection => {
                 this.setSelection('suggestedSeniorEditors', selection)
-              }
+              }}
               options={seniorEditors}
               title="senior editors"
             />

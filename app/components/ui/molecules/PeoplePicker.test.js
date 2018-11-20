@@ -44,12 +44,6 @@ const expectSelectionLength = (wrapper, length) =>
   expect(wrapper.find('SelectedItem')).toHaveLength(length)
 
 describe('PeoplePicker', () => {
-  it('calls child render prop', () => {
-    const render = jest.fn(() => null)
-    makeWrapper({ children: render })
-    expect(render).toHaveBeenCalled()
-  })
-
   it('renders as many person pods as people', () => {
     const wrapper = makeWrapper()
     const buttons = wrapper.find('PersonPod')

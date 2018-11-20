@@ -10,10 +10,17 @@ import { escapeRegExp } from 'lodash'
 import SelectedItem from '../atoms/SelectedItem'
 import PersonPod from './PersonPod'
 import TwoColumnLayout from '../../global/layout/TwoColumnLayout'
-import ModalDialog from '../../ui/molecules/ModalDialog'
-import ModalHistoryState from '../../ui/molecules/ModalHistoryState'
+import Centerer from '../../global/layout/Centerer'
+import SearchBox from './SearchBox'
+import { FormH2 } from '../atoms/FormHeadings'
+import StickyFooter from '../atoms/StickyFooter'
 
 const MAX_DISPLAYED_PODS = 30
+
+const MainColumn = styled(Box).attrs({ mx: [0, 0, 0, '16.666%'] })`
+  flex: 1 1 auto;
+  min-width: 0;
+`
 
 const SelectedItems = ({ selection, onCloseClick }) => (
   <Flex>
@@ -53,60 +60,39 @@ const PeoplePickerBody = ({
   isSelected,
   maxSelection,
   minSelection,
-  onCancel,
-  onSubmit,
   people,
   selection,
   toggleSelection,
 }) => (
-  <ModalHistoryState name="full-person-info">
-    {({ showModal, hideModal, isModalVisible }) => (
-      <React.Fragment>
-        <Flex justifyContent="space-between" mb={3}>
-          <SelectedItems onCloseClick={toggleSelection} selection={selection} />
-          <SelectionHint
-            maxSelection={maxSelection}
-            minSelection={minSelection}
-            selection={selection}
+  <React.Fragment>
+    <Flex justifyContent="space-between" mb={3}>
+      <SelectedItems onCloseClick={toggleSelection} selection={selection} />
+      <SelectionHint
+        maxSelection={maxSelection}
+        minSelection={minSelection}
+        selection={selection}
+      />
+    </Flex>
+    <TwoColumnLayout>
+      {people
+        .map(person => (
+          <PersonPod
+            iconType={isSelected(person) ? 'selected' : 'add'}
+            institution={person.aff}
+            isIconClickable={
+              isSelected(person) || selection.length < maxSelection
+            }
+            isKeywordClickable={false}
+            key={person.id}
+            keywords={person.subjectAreas}
+            name={person.name}
+            onIconClick={() => toggleSelection(person)}
+            // onKeywordClick will need to be added, once we know what the desired behaviour is
           />
-        </Flex>
-        <TwoColumnLayout>
-          {people
-            .map(person => (
-              <PersonPod
-                iconType={isSelected(person) ? 'selected' : 'add'}
-                institution={person.aff}
-                isIconClickable={
-                  isSelected(person) || selection.length < maxSelection
-                }
-                isKeywordClickable={false}
-                key={person.id}
-                keywords={person.subjectAreas}
-                name={person.name}
-                onIconClick={() => toggleSelection(person)}
-                onInfoClick={() => showModal()}
-                // onKeywordClick will need to be added, once we know what the desired behaviour is
-              />
-            ))
-            .slice(0, MAX_DISPLAYED_PODS)}
-        </TwoColumnLayout>
-        <ModalDialog
-          acceptText="Add Editor"
-          onAccept={() => {
-            console.log('helllll yeah')
-          }}
-          onCancel={() => {
-            console.log('hell no')
-            hideModal()
-          }}
-          open={isModalVisible()}
-        >
-          <p>Name</p>
-          Institution and keywords
-        </ModalDialog>
-      </React.Fragment>
-    )}
-  </ModalHistoryState>
+        ))
+        .slice(0, MAX_DISPLAYED_PODS)}
+    </TwoColumnLayout>
+  </React.Fragment>
 )
 
 const PeoplePickerButtons = ({ isValid, onCancel, onSubmit }) => (
@@ -187,7 +173,13 @@ class PeoplePicker extends React.Component {
   }
 
   render() {
-    const { people, ...otherProps } = this.props
+    const {
+      maxSelection = Infinity,
+      minSelection = 0,
+      people,
+      title,
+    } = this.props
+
     let extendedPeople = [...people].sort((a, b) =>
       a.name.localeCompare(b.name),
     )
@@ -201,23 +193,59 @@ class PeoplePicker extends React.Component {
     const searchOptions = extendedPeople.map(person => ({
       value: person.name,
     }))
-    return this.props.children({
-      ...otherProps,
-      people: this.filterPeople(
-        extendedPeople,
-        this.state.searchValue,
-        'searchValue',
-      ),
-      searchSubmit: this.searchSubmit,
-      searchOptions,
-      filterFunction: this.filterPeople,
-      getMatchIndex: this.getMatchIndex,
-      isSelected: person => this.isSelected(person),
-      isValid: this.isValid(),
-      selection: this.state.selection,
-      onSubmit: () => this.handleSubmit(),
-      toggleSelection: person => this.toggleSelection(person),
-    })
+    return (
+      <React.Fragment>
+        <Centerer pt={3} px={3}>
+          <Flex>
+            <MainColumn>
+              <FormH2>Choose {title}</FormH2>
+            </MainColumn>
+          </Flex>
+        </Centerer>
+        <Centerer mb={3} px={3}>
+          <Flex mx={-2}>
+            <Box
+              mx={[0, 0, 0, '16.666%']}
+              px={[2, 2, 2, 1]}
+              width={[1, 1, 1 / 2, 0.33]}
+            >
+              <SearchBox
+                filterFunction={this.filterPeople}
+                getMatchIndex={this.getMatchIndex}
+                onSubmit={this.searchSubmit}
+                options={searchOptions}
+              />
+            </Box>
+          </Flex>
+        </Centerer>
+        <Centerer mb={3} px={3}>
+          <Flex data-test-id="people-picker-body">
+            <MainColumn mb={7}>
+              <PeoplePicker.Body
+                isSelected={person => this.isSelected(person)}
+                maxSelection={maxSelection}
+                minSelection={minSelection}
+                people={this.filterPeople(
+                  extendedPeople,
+                  this.state.searchValue,
+                  'searchValue',
+                )}
+                selection={this.state.selection}
+                toggleSelection={person => this.toggleSelection(person)}
+              />
+            </MainColumn>
+          </Flex>
+        </Centerer>
+        <StickyFooter>
+          <MainColumn>
+            <PeoplePicker.Buttons
+              isValid={this.isValid}
+              onSubmit={submission => this.handleSubmit(submission)}
+            />
+          </MainColumn>
+        </StickyFooter>
+      </React.Fragment>
+    )
   }
 }
 const peopleArrayPropType = PropTypes.arrayOf(
@@ -234,6 +262,7 @@ PeoplePicker.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   people: peopleArrayPropType.isRequired,
+  title: PropTypes.string.isRequired,
 }
 
 PeoplePicker.defaultProps = {

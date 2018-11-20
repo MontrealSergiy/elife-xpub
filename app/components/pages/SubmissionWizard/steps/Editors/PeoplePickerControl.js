@@ -2,8 +2,9 @@ import React from 'react'
 
 import PersonPod from '../../../../ui/molecules/PersonPod'
 import TwoColumnLayout from '../../../../global/layout/TwoColumnLayout'
-import PeoplePickerModal from './PeoplePickerModal'
 import ModalHistoryState from '../../../../ui/molecules/ModalHistoryState'
+import ModalOverlay from '../../../../ui/molecules/ModalOverlay'
+import PeoplePicker from '../../../../ui/molecules/PeoplePicker'
 
 const PeoplePickerControl = ({
   maxSelection = Infinity,
@@ -24,7 +25,6 @@ const PeoplePickerControl = ({
           isKeywordClickable={false}
           key={person.id}
           keywords={person.subjectAreas}
-          modalName={person.id}
           name={person.name}
           onIconClick={() => onRequestRemove(person)}
         />
@@ -43,19 +43,20 @@ const PeoplePickerControl = ({
       return (
         <React.Fragment>
           <TwoColumnLayout>{items}</TwoColumnLayout>
-          <PeoplePickerModal
-            initialSelection={initialSelection}
-            maxSelection={maxSelection}
-            minSelection={minSelection}
-            onCancel={hideModal}
-            onSubmit={(...args) => {
-              hideModal()
-              onSubmit(...args)
-            }}
-            open={isModalVisible()}
-            people={options}
-            title={title}
-          />
+          <ModalOverlay open={isModalVisible()} transparentBackground={false}>
+            <PeoplePicker
+              initialSelection={initialSelection}
+              maxSelection={maxSelection}
+              minSelection={minSelection}
+              onCancel={hideModal}
+              onSubmit={(...args) => {
+                hideModal()
+                onSubmit(...args)
+              }}
+              people={options}
+              title={title}
+            />
+          </ModalOverlay>
         </React.Fragment>
       )
     }}
