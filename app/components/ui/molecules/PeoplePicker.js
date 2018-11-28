@@ -11,7 +11,7 @@ import SelectedItem from '../atoms/SelectedItem'
 import PersonPod from '../atoms/PersonPod'
 import TwoColumnLayout from '../../global/layout/TwoColumnLayout'
 
-const MAX_DISPLAYED_PODS = 30
+const MAX_DISPLAYED_PODS = 1
 
 const SelectedItems = ({ selection, onCloseClick }) => (
   <Flex>
@@ -91,7 +91,14 @@ const PeoplePickerBody = ({
 const PeoplePickerButtons = ({ isValid, onCancel, onSubmit }) => (
   <Flex>
     <Box mr={3}>
-      <Button onClick={onCancel}>Cancel</Button>
+      <Button
+        onClick={() => {
+          console.log('cancel')
+          onCancel()
+        }}
+      >
+        Cancel
+      </Button>
     </Box>
     <Box>
       <Button
