@@ -5,8 +5,6 @@ import { th } from '@pubsweet/ui-toolkit'
 import { Action } from '@pubsweet/ui'
 import { Flex, Box } from 'grid-styled'
 
-import LogLifecyle from 'react-log-lifecycle'
-
 import Icon from './Icon'
 import ButtonAsIconWrapper from './ButtonAsIconWrapper'
 import SmallParagraph from './SmallParagraph'
@@ -150,19 +148,9 @@ const PodIcon = ({ iconType }) => {
   }
 }
 
-const flags = {
-  // If logType is set to keys then the props of the object being logged
-  // will be written out instead of the whole object. Remove logType or
-  // set it to anything except keys to have the full object logged.
-  logType: 'keys',
-  // A list of the param "types" to be logged.
-  // The example below has all the types.
-  names: ['props', 'nextProps', 'nextState', 'prevProps', 'prevState'],
-}
-
-class PersonPod extends LogLifecyle {
+class PersonPod extends React.Component {
   constructor(props) {
-    super(props, flags)
+    super(props)
 
     this.state = {
       isModalOpen: false,
@@ -183,7 +171,6 @@ class PersonPod extends LogLifecyle {
   }
 
   render() {
-    console.log('PersonPod')
     const {
       isSelectButtonClickable = true,
       togglePersonSelection,

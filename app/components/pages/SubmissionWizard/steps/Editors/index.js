@@ -17,16 +17,26 @@ const EDITOR_LIST_QUERY = gql`
 
 const EditorsPageContainer = ({ ...props }) => (
   <Query query={EDITOR_LIST_QUERY} variables={{ role: 'reviewing-editor' }}>
-    {({ data: { editors: reviewingEditors = [] } }) => (
-      // TODO handle errors
+    {({
+      loading: loadingReviewingEditors,
+      data: { editors: reviewingEditors = [] },
+    }) => (
       <Query query={EDITOR_LIST_QUERY} variables={{ role: 'senior-editor' }}>
-        {({ data: { editors: seniorEditors = [] } }) => (
-          <EditorsPage
-            reviewingEditors={reviewingEditors}
-            seniorEditors={seniorEditors}
-            {...props}
-          />
-        )}
+        {({
+          loading: loadingSeniorEditors,
+          data: { editors: seniorEditors = [] },
+        }) => {
+          if (loadingReviewingEditors || loadingSeniorEditors)
+            return 'Loading...' // TODO add spinner when one is implemented
+          // TODO handle errors => if (error) return `Error! ${error.message}`;
+          return (
+            <EditorsPage
+              reviewingEditors={reviewingEditors}
+              seniorEditors={seniorEditors}
+              {...props}
+            />
+          )
+        }}
       </Query>
     )}
   </Query>

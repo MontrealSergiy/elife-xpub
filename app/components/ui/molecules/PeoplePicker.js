@@ -11,7 +11,7 @@ import SelectedItem from '../atoms/SelectedItem'
 import PersonPod from '../atoms/PersonPod'
 import TwoColumnLayout from '../../global/layout/TwoColumnLayout'
 
-const MAX_DISPLAYED_PODS = 1
+const MAX_DISPLAYED_PODS = 30
 
 const SelectedItems = ({ selection, onCloseClick }) => (
   <Flex>
@@ -66,23 +66,26 @@ const PeoplePickerBody = ({
     </Flex>
     <TwoColumnLayout>
       {people
-        .map(person => (
-          <PersonPod
-            expertises={person.expertises}
-            focuses={person.focuses}
-            iconType={isSelected(person) ? 'selected' : 'add'}
-            institution={person.aff}
-            isKeywordClickable={false}
-            isSelectButtonClickable={
-              isSelected(person) || selection.length < maxSelection
-            }
-            isSelected={isSelected(person)}
-            key={person.id}
-            name={person.name}
-            togglePersonSelection={() => toggleSelection(person)}
-            // onKeywordClick will need to be added, once we know what the desired behaviour is
-          />
-        ))
+        .map(person => {
+          const isPersonSelected = isSelected(person)
+          return (
+            <PersonPod
+              expertises={person.expertises}
+              focuses={person.focuses}
+              iconType={isPersonSelected ? 'selected' : 'add'}
+              institution={person.aff}
+              isKeywordClickable={false}
+              isSelectButtonClickable={
+                isPersonSelected || selection.length < maxSelection
+              }
+              isSelected={isPersonSelected}
+              key={person.id}
+              name={person.name}
+              togglePersonSelection={() => toggleSelection(person)}
+              // onKeywordClick will need to be added, once we know what the desired behaviour is
+            />
+          )
+        })
         .slice(0, MAX_DISPLAYED_PODS)}
     </TwoColumnLayout>
   </React.Fragment>
@@ -120,6 +123,13 @@ class PeoplePicker extends React.Component {
       selection: this.props.initialSelection,
       searchValue: '',
     }
+  }
+
+  shouldComponentUpdate(_nextProps, nextState) {
+    return !(
+      this.state.selection.length === nextState.selection.length &&
+      this.state.searchValue === nextState.searchValue
+    )
   }
 
   toggleSelection(person) {
