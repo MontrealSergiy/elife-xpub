@@ -65,28 +65,26 @@ const PeoplePickerBody = ({
       />
     </Flex>
     <TwoColumnLayout>
-      {people
-        .map(person => {
-          const isPersonSelected = isSelected(person)
-          return (
-            <PersonPod
-              expertises={person.expertises}
-              focuses={person.focuses}
-              iconType={isPersonSelected ? 'selected' : 'add'}
-              institution={person.aff}
-              isKeywordClickable={false}
-              isSelectButtonClickable={
-                isPersonSelected || selection.length < maxSelection
-              }
-              isSelected={isPersonSelected}
-              key={person.id}
-              name={person.name}
-              togglePersonSelection={() => toggleSelection(person)}
-              // onKeywordClick will need to be added, once we know what the desired behaviour is
-            />
-          )
-        })
-        .slice(0, MAX_DISPLAYED_PODS)}
+      {people.slice(0, MAX_DISPLAYED_PODS).map(person => {
+        const isPersonSelected = isSelected(person)
+        return (
+          <PersonPod
+            expertises={person.expertises}
+            focuses={person.focuses}
+            iconType={isPersonSelected ? 'selected' : 'add'}
+            institution={person.aff}
+            isKeywordClickable={false}
+            isSelectButtonClickable={
+              isPersonSelected || selection.length < maxSelection
+            }
+            isSelected={isPersonSelected}
+            key={person.id}
+            name={person.name}
+            togglePersonSelection={() => toggleSelection(person)}
+            // onKeywordClick will need to be added, once we know what the desired behaviour is
+          />
+        )
+      })}
     </TwoColumnLayout>
   </React.Fragment>
 )
@@ -96,7 +94,6 @@ const PeoplePickerButtons = ({ isValid, onCancel, onSubmit }) => (
     <Box mr={3}>
       <Button
         onClick={() => {
-          console.log('cancel')
           onCancel()
         }}
       >
