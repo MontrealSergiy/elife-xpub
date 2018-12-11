@@ -78,7 +78,7 @@
   "dependencies": {
     "@elifesciences/elife-theme": "^1.0.0",
     "@pubsweet/ui": "^8.8.0",
-    "@pubsweet/ui-toolkit": "^1.2.0",
+    "@pubsweet/ui-toolkit": "^2.0.2",
     "apollo-link-state": "^0.4.1",
     "config": "^2.0.1",
     "date-fns": "^1.29.0",
