@@ -77,7 +77,7 @@
   ],
   "dependencies": {
     "@elifesciences/elife-theme": "^1.0.0",
-    "@pubsweet/ui": "^8.8.0",
+    "@pubsweet/ui": "^9.0.2",
     "@pubsweet/ui-toolkit": "^2.0.2",
     "apollo-link-state": "^0.4.1",
     "config": "^2.0.1",
@@ -92,7 +92,7 @@
     "newrelic": "^4.8.1",
     "omit-deep-lodash": "^1.1.2",
     "prop-types": "^15.6.2",
-    "pubsweet-client": "^6.1.0",
+    "pubsweet-client": "^7.0.2",
     "pubsweet-server": "^10.0.3",
     "pug": "^2.0.3",
     "react": "^16.4.2",
