@@ -394,7 +394,7 @@
     lodash "^4.17.4"
     styled-components "^3.2.5"
 
-"@pubsweet/ui-toolkit@^2.0.2":
+"@pubsweet/ui-toolkit@^2.0.1", "@pubsweet/ui-toolkit@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@pubsweet/ui-toolkit/-/ui-toolkit-2.0.2.tgz#1dc8c7ac31eb53cce345ab85e982c51404f95bf7"
   integrity sha512-keyBcNfnsXlg2A4wNpJbuYZ6i+rRq+BM0JQfI4qsdvY8yTsHS8Pvwrh752X6GneD80t4UsV0C8yG65mBOulCtQ==
@@ -13870,7 +13870,7 @@ styled-normalize@^3.0.1:
   resolved "https://registry.yarnpkg.com/styled-normalize/-/styled-normalize-3.0.1.tgz#217efb96598690addd04699ca71af0db3473fea2"
   integrity sha512-EtTwCJDKMoJ+GU0YxklkHukltPGz7Swfq/fKyeP/WEQGF01DXGVXmuo1Rp2kMTQ9kz7o6dVBvvmT+KQyKe8Okw==
 
-styled-system@2.3.6, "styled-system@>=2.0.0 || >=3.0.0", styled-system@^2.3.1:
+"styled-system@>=2.0.0 || >=3.0.0", styled-system@^2.3.1:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/styled-system/-/styled-system-2.3.6.tgz#a38c1ffa04a5c35adec46473984e463c48b16f7c"
   integrity sha512-lGAh/8tC70f5hBUD7w0UOWCKyOBK2AzzWKu9BGzqla/Yjx8PzrvaciA7uATbm493hXTfRrecSdLdrIUET5IYnA==
