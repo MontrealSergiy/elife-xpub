@@ -133,13 +133,16 @@ const ErrorMessage = styled.span`
   font-size: 12px;
 `
 
-function* fileUploadGenerator(files, uploadFile) {
-  for (let fileIndex = 0; fileIndex < files.length; ) {
+function* fileUploadGenerator(files, uploadFile, replaceFile) {
+  for (let fileIndex = 0; fileIndex < files.length; fileIndex+=1) {
+    console.log('111111111')
+    console.log(files[fileIndex].file)
     yield {
       upload: uploadFile(files[fileIndex].file),
+      replace: replaceFile(files[fileIndex].file.id),
       fileId: files[fileIndex].id,
+      fileName: files[fileIndex].file.name,
     }
-    fileIndex += 1
   }
 }
 
@@ -159,13 +162,80 @@ class SupportingUpload extends React.Component {
 
   synchronouslyUploadFiles = files => {
     const { uploadFile } = this.props
-    const iterator = fileUploadGenerator(files, uploadFile)
+    const { replaceFile } = this.props
+    console.log('--------------------')
+    console.log('uploading a new file')
+    // console.log(files)
+    const iterator = fileUploadGenerator(files, uploadFile, replaceFile)
     const loop = result => {
+      console.log('new iteration')
+      console.log(result)
+      console.log('done ', result.done)
       if (result.done) {
         this.setState({ uploading: false })
       } else {
+        const index = this.state.files.findIndex(file =>  (file.file.filename || file.file.name) === result.value.fileName)
+        console.log('index from upload:,', index)
+        
+
+        if (index > -1 ) {
+          console.log( 'removing time')
+          console.log(this.state.files[index].id)
+          // console.log( 'not uploading the file')
+          // this.updateFileState(index, {
+          //   success: true,
+          //   loading: false,
+          // })
+          result.value.replace
+            .then(data => {
+              // this.updateFileState(result.value.fileId, {
+              //   success: true,
+              //   loading: false,
+              // })
+                console.log('now we have to upload the file again!')
+                console.log(result.value)
+                // this.updateFileState(index, {
+                //     success: true,
+                //     loading: false,
+                //   })
+                result.value.upload
+                  .then(data2 => {
+                    console.log('uploading time...')
+                    console.log(result.value.fileId)
+                    this.updateFileState(result.value.fileId, {
+                      success: true,
+                      loading: false,
+                    })
+                  })
+                //   .catch(() => {
+                //     this.updateFileState(result.value.fileId, {
+                //       error: true,
+                //       loading: false,
+                //     })
+                //   })
+                //   .finally(() => loop(iterator.next()))
+              })
+              .catch((error) => {
+                console.log('--------------there was an error')
+                console.log(error)
+                this.updateFileState(result.value.fileId, {
+                  error: true,
+                  loading: false,
+                })
+              })
+            .finally(() => loop(iterator.next()))
+        } else {
+
         result.value.upload
           .then(data => {
+            // let newIndex = result.value.fileId
+            // if (index > -1) {
+            //   console.log('update, not push')
+            //   newIndex = index
+            //   console.log(`newIndex ${newIndex}`)
+            // }
+            console.log('uploading time...')
+            console.log(result.value.fileId)
             this.updateFileState(result.value.fileId, {
               success: true,
               loading: false,
@@ -178,12 +248,14 @@ class SupportingUpload extends React.Component {
             })
           })
           .finally(() => loop(iterator.next()))
+        }
       }
     }
     loop(iterator.next())
   }
 
   updateFileState = (fileId, newState) => {
+    console.log('updating file state for index ', fileId)
     const newFilesState = [...this.state.files]
     const fileIndex = newFilesState.findIndex(file => file.id === fileId)
     if (fileIndex > -1) {
@@ -207,7 +279,9 @@ class SupportingUpload extends React.Component {
         this.setState({
           uploading: true,
         })
-        this.synchronouslyUploadFiles(filesToUpload)
+        console.log('filesToUpload')
+        console.log(filesToUpload)
+        
       }
       storageSpace -= filesToUpload.length
       let rejectedFilesToAdd = []
@@ -222,10 +296,47 @@ class SupportingUpload extends React.Component {
             rejected: true,
           }))
       }
+      
 
-      this.setState({
-        files: [...this.state.files, ...filesToUpload, ...rejectedFilesToAdd],
-      })
+      let isUpdate = false
+      filesToUpload.forEach(uploadFile => {
+      // console.log('aaaaaaa')
+      // console.log(uploadFile)
+      const index = this.state.files.findIndex(file => (file.file.name || file.file.filename) === uploadFile.file.name)
+      console.log('index, ', index)
+      // // {
+      // //   console.log('@@@@@')
+      // //   console.log('@@@@@')
+      // //   console.log(file.file)
+      // //   return (file.file.name || file.file.filename) === uploadFile.file.name
+      // // })
+      // console.log(index)
+      this.synchronouslyUploadFiles(filesToUpload)
+      if (index > -1) {
+        // this.state.files[index] = uploadFile
+        const newFiles =  [...this.state.files]
+        console.log('bbbbbbbb')
+        console.log(newFiles)
+        console.log(uploadFile)
+        newFiles[index] = uploadFile
+        console.log('ccccccc')
+        console.log(newFiles)
+        this.setState({
+          files: [ ...newFiles ]
+        })
+        isUpdate = true
+      // } else {
+          // 
+      }
+    })
+// console.log(isUpdate)
+
+      if (!isUpdate) {
+        this.setState({
+          files: [...this.state.files, ...filesToUpload, ...rejectedFilesToAdd],
+        })
+      }
+
     }
   }
 
@@ -265,7 +376,7 @@ class SupportingUpload extends React.Component {
                 </FileName>
                 {file.rejected && (
                   <ErrorMessage data-test-id="file-block-error">
-                    {errorMessageMapping.MAX_SIZE_EXECEEDED}
+                    {errorMessageMapping.MAX_SIZE_EXCEEDED}
                   </ErrorMessage>
                 )}
               </FileHolder>
@@ -278,6 +389,7 @@ class SupportingUpload extends React.Component {
               <Flex>
                 {successfullyUploadedFiles.length < MAX_SUPPORTING_FILES && (
                   <React.Fragment>
+                
                     <UploadControl>
                       Add more{' '}
                       <UploadLink

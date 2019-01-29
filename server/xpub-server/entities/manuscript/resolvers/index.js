@@ -9,6 +9,7 @@ const updateManuscript = require('./updateManuscript')
 const uploadManuscript = require('./uploadManuscript')
 const uploadSupportingFile = require('./uploadSupportingFile')
 const removeSupportingFiles = require('./removeSupportingFiles')
+const replaceSupportingFile = require('./replaceSupportingFile')
 
 const resolvers = {
   Query: {
@@ -63,6 +64,8 @@ const resolvers = {
     removeUploadedManuscript,
 
     removeSupportingFiles,
+
+    replaceSupportingFile,
 
     async savePage(_, vars, { user }) {
       const userUuid = await User.getUuidForProfile(user)

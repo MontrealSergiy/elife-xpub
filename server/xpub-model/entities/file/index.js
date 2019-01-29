@@ -44,6 +44,20 @@ class File extends BaseModel {
     return this.save()
   }
 
+  async updateSize(size) {
+    this.size = size
+
+    await new AuditLog({
+      action: 'UPDATED',
+      objectId: this.id,
+      objectType: 'file.size',
+      value: size,
+    }).save()
+
+    return this.save()
+
+  }
+
   static async findByManuscriptId(manuscriptId) {
     const files = await this.query().where({
       manuscript_id: manuscriptId,

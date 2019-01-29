@@ -18,6 +18,7 @@ const UPLOAD_MANUSCRIPT_MUTATION = gql`
       files {
         filename
         type
+        id
       }
     }
   }
@@ -33,6 +34,7 @@ const UPLOAD_SUPPORTING_MUTATION = gql`
       files {
         filename
         type
+        id
       }
     }
   }
@@ -45,6 +47,7 @@ const DELETE_MANUSCRIPT_MUTATION = gql`
       files {
         filename
         type
+        id
       }
     }
   }
@@ -58,6 +61,14 @@ const DELETE_SUPPORTING_FILES_MUTATION = gql`
         filename
         type
       }
+    }
+  }
+`
+
+const REPLACE_SUPPORTING_FILE = gql`
+  mutation replaceFile($manuscriptId: ID!, $fileId: ID!) {
+    replaceSupportingFile(manuscriptId: $manuscriptId, fileId: $fileId) {
+      id
     }
   }
 `
@@ -182,28 +193,46 @@ const FilesPageContainer = ({
                   {uploadSupportFiles => (
                     <Mutation mutation={DELETE_SUPPORTING_FILES_MUTATION}>
                       {removeSupportFiles => (
-                        <SupportingUpload
-                          data-test-id="supportingFilesUpload"
-                          files={submissionFiles.filter(
-                            file => file.type === SUPPORTING_FILE,
-                          )}
-                          hasManuscript={hasManuscript}
-                          removeFiles={() =>
-                            removeSupportFiles({
-                              variables: { id: values.id },
-                            })
-                          }
-                          uploadFile={file =>
-                            new Promise((resolve, reject) =>
-                              uploadSupportFiles({
-                                variables: { file, id: values.id },
-                              })
-                                .then(data => resolve(data))
-                                .catch(err => reject(err)),
-                            )
-                          }
-                        />
-                      )}
+                        <Mutation mutation={REPLACE_SUPPORTING_FILE}>
+                          {replaceSupportingFile => (
+                              <SupportingUpload
+                                data-test-id="supportingFilesUpload"
+                                files={submissionFiles.filter(
+                                  file => file.type === SUPPORTING_FILE,
+                                )}
+                                hasManuscript={hasManuscript}
+                                removeFiles={() =>
+                                  removeSupportFiles({
+                                    variables: { id: values.id },
+                                  })
+                                }
+                                replaceFile={fileId => {
+                                  console.log('removing file ')
+                                  console.log(fileId)
+                                  console.log('id')
+                                  console.log(values.id)
+                                  
+                                  return new Promise((resolve, reject) => 
+                                    replaceSupportingFile({
+                                      variables: { fileId, manuscriptId: values.id},
+                                    })
+                                    .then(data => resolve(data))
+                                    .catch(error => reject(error)))
+                                }}
+                                uploadFile={file => {
+                                  console.log('im uploading....')
+                                    return new Promise((resolve, reject) =>
+                                      uploadSupportFiles({
+                                        variables: { file, id: values.id },
+                                      })
+                                      .then(data => resolve(data))
+                                      .catch(err => reject(err)),
+                                  )
+                                }}
+                              />
+                            )}
+                          </Mutation>
+                        )}
                     </Mutation>
                   )}
                 </Mutation>
