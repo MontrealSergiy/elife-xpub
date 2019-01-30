@@ -190,12 +190,15 @@ class ManuscriptUpload extends React.Component {
   render() {
     const { onDrop, conversion, formError, fileName, ...props } = this.props
     let dropzoneRef
+    const [errorType, errorMessage] = this.state.errorMessage
+      ? this.state.errorMessage.split(',')
+      : [null, null]
     return (
       <StyledDropzone
         accept={VALID_FILE_TYPES}
         disableClick
         disabled={conversion.converting}
-        hasError={this.state.errorMessage && !conversion.converting}
+        hasError={errorType && errorMessage && !conversion.converting}
         maxSize={MAX_FILE_SIZE * 1e6}
         onDrop={files => {
           this.setErrorMessage(null)
@@ -212,7 +215,7 @@ class ManuscriptUpload extends React.Component {
             <DropzoneContent
               conversion={conversion}
               dropzoneOpen={() => dropzoneRef.open()}
-              errorMessage={this.state.errorMessage}
+              errorMessage={errorMessage}
               fileName={this.droppedFileName || fileName}
             />
           </Box>
