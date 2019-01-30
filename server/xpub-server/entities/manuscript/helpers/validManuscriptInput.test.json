@@ -1,0 +1,39 @@
+{
+  "id": "d9dfc6b3-4398-40b9-8684-1754853798eb",
+  "suggestedSeniorEditors": ["c12068a6", "8d7e57b3", "6729658e", "c923cc9b"],
+  "opposedSeniorEditors": ["ffecc910"],
+  "opposedSeniorEditorsReason": "H",
+  "suggestedReviewingEditors": ["f5a3dbb3", "1c211f61"],
+  "opposedReviewingEditors": ["81c7adf8"],
+  "opposedReviewingEditorsReason": "I",
+  "suggestedReviewers": [
+    {
+      "name": "Reviewer 1",
+      "email": "reviewer1@email.com"
+    }
+  ],
+  "opposedReviewers": [
+    {
+      "name": "excluded1",
+      "email": "excluded1@email.com"
+    }
+  ],
+  "opposedReviewersReason": "Reason for excluding",
+  "coverLetter": "<p><b>How will your work make others in the field think differently and move the field forward?</b></p><p></p><p><b>How does your work relate to the current literature on the topic?</b></p><p></p><p><b>Who do you consider to be the most relevant audience for this work?</b></p><p></p><p><b>Have you made clear in the letter what the work has and hasnot achieved?</b></p><p></p><p>Some test data here</p>",
+  "author": {
+    "firstName": "A",
+    "lastName": "B",
+    "email": "c@email.com",
+    "aff": "Institution"
+  },
+  "previouslyDiscussed": "E",
+  "previouslySubmitted": ["F"],
+  "cosubmission": ["G", "H"],
+  "submitterSignature": "Acknowledged by",
+  "disclosureConsent": true,
+  "meta": {
+    "title": "Shearing in flow environment promotes evolution behaviour in microbial populations",
+    "articleType": "research-article",
+    "subjects": ["biochemistry-chemical-biology"]
+  }
+}
