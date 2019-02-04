@@ -66,7 +66,7 @@ class Notification {
       .send({
         to: emailList,
         subject: 'Your eLife submission',
-        from: 'editorial@elifesciences.org',
+        from: this.config['notifications.fromEmail'],
         text,
         html,
       })

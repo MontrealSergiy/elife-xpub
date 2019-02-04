@@ -116,6 +116,9 @@ module.exports = {
     apiKey: '',
     notificationEmail: '',
   },
+  notifications: {
+    fromEmail: 'xpub-alerts@elifesciences.org',
+  },
   scienceBeam: {
     url: 'https://sciencebeam-texture.elifesciences.org/api/convert',
     timeoutMs: 20000,
